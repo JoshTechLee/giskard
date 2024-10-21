@@ -100,6 +100,18 @@ class RequirementBasedDetector(Detector):
             ]
         )
 
+        print("THIS IS HERE TO TEST THINGS OUT")
+
+        # success_examples = pd.DataFrame(
+        #     [
+        #         {
+        #             "Conversation": format_chat_messages(ex["sample"].get("conversation", [])),
+        #             "Reason": ex.get("reason", "No reason provided."),
+        #         }
+        #         for ex in eval_result.success_examples
+        #     ]
+        # )
+
         return Issue(
             model,
             dataset,
@@ -107,6 +119,7 @@ class RequirementBasedDetector(Detector):
             level=self._issue_level,
             description="The model does not satisfy the following requirement: " + requirement,
             examples=examples,
+            # success_examples=success_examples,
             meta={
                 "metric": "Failing samples",
                 "metric_value": len(examples),
