@@ -366,6 +366,7 @@ class Scanner:
             print(COST_ESTIMATE_TEMPLATE.format(num_detectors=len(detectors), **estimates))
 
     def _print_execution_summary(self, model, issues, errors, elapsed):
+        print("AND THIS?!")
         print(
             f"Scan completed: {len(issues) or 'no'} issue{'s' if len(issues) != 1 else ''} found. (Took {datetime.timedelta(seconds=elapsed)})"
         )
