@@ -43,6 +43,7 @@ class ScanReport:
         self.model = model
         self.dataset = dataset
         self.detectors_names = detectors_names
+        print("HELLO HELLO HELLO?")
 
     def has_issues(self):
         return len(self.issues) > 0
