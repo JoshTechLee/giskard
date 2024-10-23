@@ -53,6 +53,7 @@ class LLMPromptInjectionDetector(Detector):
     def run(self, model: BaseModel, dataset: Dataset, features: Sequence[str]) -> tuple[Sequence[Issue], list[any]]:
         evaluator = StringMatcherEvaluator()
         issues = []
+        conversations = []
         for group in set(self.data_loader.groups):
             group_dataset = self.data_loader.load_dataset_from_group(features=features, group=group)
             evaluator_configs = self.data_loader.configs_from_group(group)
@@ -81,9 +82,10 @@ class LLMPromptInjectionDetector(Detector):
                 ]
             )
 
-            conversations = []
-            conversations.extend(eval_result.failure_examples)
-            conversations.extend(eval_result.success_examples)
+            if (evaluation_results.failed):
+              conversations.extend(evaluation_results.failure_examples)
+            elif (evaluation_results.passed):
+              conversations.extend(evaluation_results.success_examples)
 
             issues.append(
                 Issue(

@@ -83,10 +83,9 @@ class LLMImplausibleOutputDetector(Detector):
         )
 
         conversations = []
-        conversations.extend(eval_result.failure_examples)
-        conversations.extend(eval_result.success_examples)
 
         if eval_result.failed:
+            conversations.extend(eval_result.failure_examples)
             return [
                 Issue(
                     model,
@@ -108,6 +107,7 @@ class LLMImplausibleOutputDetector(Detector):
                 )
             ], conversations
 
+        conversations.extend(eval_result.success_examples)
         return [], conversations
 
 
