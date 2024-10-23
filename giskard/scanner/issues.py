@@ -118,7 +118,6 @@ class Issue:
         slicing_fn: Optional[SlicingFunction] = None,
         importance: float = 0,
         examples: Optional[pd.DataFrame] = None,
-        success_examples: Optional[pd.DataFrame] = None,
         features: Optional[List[str]] = None,
         tests=None,
         taxonomy: List[str] = None,
@@ -181,8 +180,6 @@ class Issue:
         self.scan_examples = DataFrameScanExamples() if scan_examples is None else scan_examples
         if examples is not None:
             self.scan_examples.extend(examples)
-        if success_examples is not None:
-            self.scan_examples.extend(success_examples)
         self._detector_name = detector_name
 
     def __repr__(self):
