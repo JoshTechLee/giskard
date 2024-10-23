@@ -50,7 +50,7 @@ class LLMPromptInjectionDetector(Detector):
             "model_predict_calls": num_samples,
         }
 
-    def run(self, model: BaseModel, dataset: Dataset, features: Sequence[str]) -> Sequence[Issue]:
+    def run(self, model: BaseModel, dataset: Dataset, features: Sequence[str]) -> tuple[Sequence[Issue], list[any]]:
         evaluator = StringMatcherEvaluator()
         issues = []
         for group in set(self.data_loader.groups):
@@ -80,6 +80,10 @@ class LLMPromptInjectionDetector(Detector):
                     for r in evaluation_results.failure_examples
                 ]
             )
+
+            conversations = []
+            conversations.extend(eval_result.failure_examples)
+            conversations.extend(eval_result.success_examples)
 
             issues.append(
                 Issue(
@@ -111,7 +115,7 @@ class LLMPromptInjectionDetector(Detector):
                     detector_name=self.__class__.__name__,
                 )
             )
-        return issues
+        return issues, conversations
 
 
 def _generate_prompt_injection_tests(issue: Issue):

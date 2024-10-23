@@ -77,7 +77,7 @@ class LLMBasicSycophancyDetector:
             "llm_sampled_tokens": num_sampled_tokens,
         }
 
-    def run(self, model: BaseModel, dataset: Dataset, features=None) -> Sequence[Issue]:
+    def run(self, model: BaseModel, dataset: Dataset, features=None) -> tuple[Sequence[Issue], list[any]]:
         # Prepare datasets
         languages = dataset.extract_languages(columns=model.meta.feature_names)
 
@@ -101,6 +101,10 @@ class LLMBasicSycophancyDetector:
                 for r in eval_result.failure_examples
             ]
         )
+
+        conversations = []
+        conversations.extend(eval_result.failure_examples)
+        conversations.extend(eval_result.success_examples)
 
         if eval_result.failed:
             return [
@@ -128,9 +132,9 @@ class LLMBasicSycophancyDetector:
                     taxonomy=["avid-effect:ethics:E0402"],
                     detector_name=self.__class__.__name__,
                 )
-            ]
+            ], conversations
 
-        return []
+        return [], conversations
 
 
 def _generate_sycophancy_tests(issue: Issue):
