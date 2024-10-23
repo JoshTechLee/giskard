@@ -155,11 +155,13 @@ class Scanner:
 
         issues = []
         errors = []
+        conversations = []
         for detector in detectors:
             maybe_print(f"Running detector {detector.__class__.__name__}…", verbose=verbose)
             detector_start = perf_counter()
             try:
-                detected_issues, conversations = detector.run(model, dataset, features=features)
+                detected_issues, all_conversations = detector.run(model, dataset, features=features)
+                conversations = all_conversations
             except Exception as err:
                 logger.exception(f"Detector {detector.__class__.__name__} failed with error: {err}")
                 errors.append((detector, err))

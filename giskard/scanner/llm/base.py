@@ -67,7 +67,6 @@ class RequirementBasedDetector(Detector):
         logger.info(f"{self.__class__.__name__}: Evaluating test cases")
         issues = []
         conversations = []
-        print("YEET YEET")
 
         for requirement in requirements:
             logger.info(f"{self.__class__.__name__}: Evaluating requirement: {requirement}")
