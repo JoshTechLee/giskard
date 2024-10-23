@@ -53,6 +53,6 @@ class LLMFaithfulnessDetector(RequirementBasedDetector):
             logger.warning(
                 f"{self.__class__.__name__}: Skipping faithfulness checks because the model is performing a different task."
             )
-            return []
+            return [], []
 
         return super().run(model, dataset, features=features)

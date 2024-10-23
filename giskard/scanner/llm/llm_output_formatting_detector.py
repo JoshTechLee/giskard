@@ -74,6 +74,6 @@ class LLMOutputFormattingDetector(RequirementBasedDetector):
             logger.warning(
                 f"{self.__class__.__name__}: Skipping output format checks because we could not define format requirements based on the model description."
             )
-            return []
+            return [], []
 
         return super().run(model, dataset, features=features)
