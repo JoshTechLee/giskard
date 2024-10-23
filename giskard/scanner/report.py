@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 
 class ScanReport:
-    def __init__(self, issues, model=None, dataset=None, detectors_names=None, as_html: bool = True):
+    def __init__(self, issues, model=None, dataset=None, detectors_names=None, as_html: bool = True, conversations=None):
         """The scan report contains the results of the scan.
 
         Note that this object is not meant to be instantiated directly. Instead, it is returned by the
@@ -43,7 +43,7 @@ class ScanReport:
         self.model = model
         self.dataset = dataset
         self.detectors_names = detectors_names
-        print("HELLO HELLO HELLO?")
+        self.conversations = conversations
 
     def has_issues(self):
         return len(self.issues) > 0

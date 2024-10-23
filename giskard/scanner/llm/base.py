@@ -57,7 +57,7 @@ class RequirementBasedDetector(Detector):
             "llm_sampled_tokens": num_sampled_tokens,
         }
 
-    def run(self, model: BaseModel, dataset: Dataset, features=None) -> Sequence[Issue]:
+    def run(self, model: BaseModel, dataset: Dataset, features=None) -> tuple[Sequence[Issue], list[any]]:
         issue_description = self.get_issue_description()
 
         logger.info(f"{self.__class__.__name__}: Generating test case requirements")
@@ -66,6 +66,7 @@ class RequirementBasedDetector(Detector):
 
         logger.info(f"{self.__class__.__name__}: Evaluating test cases")
         issues = []
+        conversations = []
         print("YEET YEET")
 
         for requirement in requirements:
@@ -82,14 +83,16 @@ class RequirementBasedDetector(Detector):
             eval_result = evaluator.evaluate(model, eval_dataset)
 
             if eval_result.failed:
+                conversations.extend(eval_result.failure_examples)
                 issues.append(self.make_issue(model, eval_dataset, requirement, eval_result))
                 logger.info(
                     f"{self.__class__.__name__}: Test case failed ({len(eval_result.failure_examples)} failed examples)"
                 )
             else:
+                conversations.extend(eval_result.success_examples)
                 logger.info(f"{self.__class__.__name__}: Test case passed")
 
-        return issues
+        return issues, conversations
 
     def make_issue(self, model: BaseModel, dataset: Dataset, requirement: str, eval_result: EvaluationResult) -> Issue:
         examples = pd.DataFrame(
@@ -104,15 +107,15 @@ class RequirementBasedDetector(Detector):
 
         print("THIS IS HERE TO TEST THINGS OUT")
 
-        # success_examples = pd.DataFrame(
-        #     [
-        #         {
-        #             "Conversation": format_chat_messages(ex["sample"].get("conversation", [])),
-        #             "Reason": ex.get("reason", "No reason provided."),
-        #         }
-        #         for ex in eval_result.success_examples
-        #     ]
-        # )
+        success_examples = pd.DataFrame(
+            [
+                {
+                    "Conversation": format_chat_messages(ex["sample"].get("conversation", [])),
+                    "Reason": ex.get("reason", "No reason provided."),
+                }
+                for ex in eval_result.success_examples
+            ]
+        )
 
         return Issue(
             model,
@@ -121,7 +124,7 @@ class RequirementBasedDetector(Detector):
             level=self._issue_level,
             description="The model does not satisfy the following requirement: " + requirement,
             examples=examples,
-            # success_examples=success_examples,
+            success_examples=success_examples,
             meta={
                 "metric": "Failing samples",
                 "metric_value": len(examples),

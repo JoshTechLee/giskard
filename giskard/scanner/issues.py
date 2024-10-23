@@ -181,8 +181,8 @@ class Issue:
         self.scan_examples = DataFrameScanExamples() if scan_examples is None else scan_examples
         if examples is not None:
             self.scan_examples.extend(examples)
-        # if success_examples is not None:
-        #     self.scan_examples.extend(success_examples)
+        if success_examples is not None:
+            self.scan_examples.extend(success_examples)
         self._detector_name = detector_name
 
     def __repr__(self):

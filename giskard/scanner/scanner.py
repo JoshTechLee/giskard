@@ -123,7 +123,7 @@ class Scanner:
             # @TODO: this should be selective to specific warnings
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                issues, errors = self._run_detectors(
+                issues, errors, conversations = self._run_detectors(
                     detectors,
                     model,
                     dataset,
@@ -143,7 +143,7 @@ class Scanner:
 
             self._collect_analytics(model, dataset, issues, elapsed, model_validation_time, detectors)
 
-        return ScanReport(issues, model=model, dataset=dataset, detectors_names=detectors_names)
+        return ScanReport(issues, model=model, dataset=dataset, detectors_names=detectors_names, conversations=conversations)
 
     def _run_detectors(
         self, detectors, model, dataset, features, verbose=True, raise_exceptions=False, max_issues_per_detector=None
@@ -159,7 +159,7 @@ class Scanner:
             maybe_print(f"Running detector {detector.__class__.__name__}…", verbose=verbose)
             detector_start = perf_counter()
             try:
-                detected_issues = detector.run(model, dataset, features=features)
+                detected_issues, conversations = detector.run(model, dataset, features=features)
             except Exception as err:
                 logger.exception(f"Detector {detector.__class__.__name__} failed with error: {err}")
                 errors.append((detector, err))
@@ -194,7 +194,7 @@ class Scanner:
 
             issues.extend(detected_issues)
 
-        return issues, errors
+        return issues, errors, conversations
 
     def _postprocess(self, issues: Sequence[Issue]) -> Sequence[Issue]:
         # If we detected a Stochasticity issue, we will have a possibly false
@@ -366,7 +366,6 @@ class Scanner:
             print(COST_ESTIMATE_TEMPLATE.format(num_detectors=len(detectors), **estimates))
 
     def _print_execution_summary(self, model, issues, errors, elapsed):
-        print("AND THIS?!")
         print(
             f"Scan completed: {len(issues) or 'no'} issue{'s' if len(issues) != 1 else ''} found. (Took {datetime.timedelta(seconds=elapsed)})"
         )
