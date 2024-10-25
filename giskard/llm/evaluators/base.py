@@ -26,9 +26,9 @@ class EvaluationResultExample:
 
     def to_example(self):
         if self.status == TestResultStatus.ERROR:
-            return {"error": self.reason, "sample": self.sample, "status": self.status}
+            return {"error": self.reason, "sample": self.sample, "status": self.status.value}
         else:
-            return {"reason": self.reason, "sample": self.sample, "status": self.status}
+            return {"reason": self.reason, "sample": self.sample, "status": self.status.value}
 
     def to_dict(self):
         return {"reason": self.reason, "sample": self.sample, "status": self.status}
@@ -40,12 +40,10 @@ class EvaluationResult:
 
     @property
     def failure_examples(self):
-        print(self.results)
         return [failed.to_example() for failed in self.results if failed.status == TestResultStatus.FAILED]
 
     @property
     def success_examples(self):
-        print(self.results)
         return [passed.to_example() for passed in self.results if passed.status == TestResultStatus.PASSED]
 
     @property
