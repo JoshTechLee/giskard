@@ -150,6 +150,7 @@ class _BaseLLMEvaluator(BaseEvaluator):
     def _parse_evaluation_output(self, raw_eval: ChatMessage) -> Tuple[bool, Optional[str]]:
         try:
             eval_result = json.loads(raw_eval.content)
+            print('testing eval result', eval_result)
             return eval_result["eval_passed"], eval_result.get("reason")
         except (AttributeError, KeyError, json.JSONDecodeError) as err:
             raise LLMGenerationError("Could not parse evaluator output") from err
