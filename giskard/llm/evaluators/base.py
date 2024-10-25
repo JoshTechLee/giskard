@@ -40,10 +40,12 @@ class EvaluationResult:
 
     @property
     def failure_examples(self):
+        print(self.results)
         return [failed.to_example() for failed in self.results if failed.status == TestResultStatus.FAILED]
 
     @property
     def success_examples(self):
+        print(self.results)
         return [passed.to_example() for passed in self.results if passed.status == TestResultStatus.PASSED]
 
     @property
