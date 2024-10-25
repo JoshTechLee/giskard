@@ -71,6 +71,7 @@ class EvaluationResult:
 
     def add_sample(self, eval_passed: bool, reason: Optional[str] = None, sample: Optional[Dict] = None):
         status = TestResultStatus.PASSED if eval_passed else TestResultStatus.FAILED
+        print('add_sample', status)
         self.results.append(EvaluationResultExample(reason=reason, sample=sample, status=status))
 
 
