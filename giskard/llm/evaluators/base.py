@@ -130,6 +130,7 @@ class _BaseLLMEvaluator(BaseEvaluator):
                 continue
 
             logger.debug(f"{self.__class__.__name__} evaluation result: eval_passed={eval_passed}, reason={reason}")
+            print(f"{self.__class__.__name__} evaluation result: eval_passed={eval_passed}, reason={reason}")
             result.add_sample(eval_passed, reason, sample)
 
         return result
