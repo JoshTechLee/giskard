@@ -71,7 +71,6 @@ class EvaluationResult:
 
     def add_sample(self, eval_passed: bool, reason: Optional[str] = None, sample: Optional[Dict] = None):
         status = TestResultStatus.PASSED if eval_passed else TestResultStatus.FAILED
-        print('add_sample', status)
         self.results.append(EvaluationResultExample(reason=reason, sample=sample, status=status))
 
 
@@ -131,7 +130,6 @@ class _BaseLLMEvaluator(BaseEvaluator):
                 continue
 
             logger.debug(f"{self.__class__.__name__} evaluation result: eval_passed={eval_passed}, reason={reason}")
-            print(f"{self.__class__.__name__} evaluation result: eval_passed={eval_passed}, reason={reason}")
             result.add_sample(eval_passed, reason, sample)
 
         return result
@@ -152,7 +150,6 @@ class _BaseLLMEvaluator(BaseEvaluator):
     def _parse_evaluation_output(self, raw_eval: ChatMessage) -> Tuple[bool, Optional[str]]:
         try:
             eval_result = json.loads(raw_eval.content)
-            print('testing eval result', eval_result)
             return eval_result["eval_passed"], eval_result.get("reason")
         except (AttributeError, KeyError, json.JSONDecodeError) as err:
             raise LLMGenerationError("Could not parse evaluator output") from err
